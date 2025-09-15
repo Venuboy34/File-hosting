@@ -1,204 +1,221 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ZeroCreation File Hosting</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
-  <style>
-    body {
-      margin: 0;
-      font-family: 'Poppins', sans-serif;
-      background: #f4f7ff;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 100vh;
-    }
-    .container {
-      background: white;
-      border-radius: 16px;
-      padding: 30px 25px;
-      max-width: 480px;
-      width: 90%;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-      text-align: center;
-    }
-    h1 {
-      color: #2c3e50;
-      margin-bottom: 25px;
-    }
-    .drop-zone {
-      border: 2px dashed #3498db;
-      border-radius: 12px;
-      padding: 35px;
-      cursor: pointer;
-      transition: 0.3s background;
-      color: #3498db;
-      font-weight: 500;
-      margin-bottom: 15px;
-    }
-    .drop-zone.dragover {
-      background: #eaf4ff;
-    }
-    input[type="url"] {
-      width: 100%;
-      padding: 12px;
-      border-radius: 8px;
-      border: 1px solid #ccc;
-      font-size: 16px;
-      margin-bottom: 15px;
-    }
-    button {
-      padding: 12px 20px;
-      border: none;
-      border-radius: 8px;
-      background-color: #3498db;
-      color: white;
-      font-size: 16px;
-      cursor: pointer;
-      width: 100%;
-      transition: 0.3s background;
-    }
-    button:hover {
-      background-color: #217dbb;
-    }
-    #progress-container {
-      margin-top: 20px;
-      display: none;
-      background: #ddd;
-      border-radius: 8px;
-      overflow: hidden;
-      height: 12px;
-    }
-    #progress-bar {
-      width: 0%;
-      height: 100%;
-      background: #3498db;
-      transition: width 0.3s;
-    }
-    #result {
-      margin-top: 20px;
-      word-break: break-word;
-    }
-    .link-box {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      background: #f1f5fb;
-      padding: 10px;
-      border-radius: 8px;
-      margin-top: 10px;
-    }
-    .link-box input {
-      border: none;
-      background: transparent;
-      width: 85%;
-      font-size: 14px;
-      color: #333;
-    }
-    .copy-btn {
-      background: #3498db;
-      color: white;
-      border: none;
-      padding: 6px 10px;
-      border-radius: 6px;
-      cursor: pointer;
-      font-size: 13px;
-      transition: 0.3s background;
-    }
-    .copy-btn:hover {
-      background: #217dbb;
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ZeroCreation File Uploader</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  body {
+    margin:0;
+    font-family:'Poppins',sans-serif;
+    background:#f4f7ff;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    min-height:100vh;
+  }
+  .container {
+    background:#fff;
+    padding:30px;
+    border-radius:16px;
+    box-shadow:0 10px 30px rgba(0,0,0,0.1);
+    max-width:600px;
+    width:90%;
+    text-align:center;
+  }
+  h1 {
+    color:#2c3e50;
+    margin-bottom:25px;
+  }
+  .drop-zone {
+    border:2px dashed #3498db;
+    border-radius:12px;
+    padding:40px;
+    cursor:pointer;
+    transition:0.3s background;
+    color:#3498db;
+    font-weight:500;
+    margin-bottom:15px;
+  }
+  .drop-zone.dragover {
+    background:#eaf4ff;
+  }
+  input[type="file"] {
+    display:none;
+  }
+  .file-list {
+    margin-top:15px;
+    text-align:left;
+  }
+  .file-item {
+    background:#f1f5fb;
+    padding:10px;
+    border-radius:8px;
+    margin-bottom:10px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+  }
+  .file-name {
+    font-size:14px;
+    word-break:break-all;
+  }
+  .progress-container {
+    background:#ddd;
+    height:10px;
+    border-radius:6px;
+    margin-top:5px;
+    overflow:hidden;
+  }
+  .progress-bar {
+    width:0%;
+    height:100%;
+    background:#3498db;
+    transition:width 0.3s;
+  }
+  .link-box {
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-top:8px;
+  }
+  .link-box input {
+    border:none;
+    background:transparent;
+    width:80%;
+    font-size:13px;
+    color:#333;
+  }
+  .copy-btn {
+    background:#3498db;
+    color:#fff;
+    border:none;
+    padding:5px 10px;
+    border-radius:6px;
+    cursor:pointer;
+    font-size:12px;
+    transition:0.3s background;
+  }
+  .copy-btn:hover {
+    background:#217dbb;
+  }
+  .upload-btn {
+    padding:12px 20px;
+    border:none;
+    border-radius:8px;
+    background-color:#3498db;
+    color:white;
+    font-size:16px;
+    cursor:pointer;
+    width:100%;
+    transition:0.3s background;
+    margin-top:15px;
+  }
+  .upload-btn:hover {
+    background-color:#217dbb;
+  }
+  .file-size {
+    font-size:12px;
+    color:#555;
+  }
+</style>
 </head>
 <body>
-  <div class="container">
-    <h1>ZeroCreation File Hosting</h1>
-    <div class="drop-zone" id="dropZone">Drag & Drop your file here or click to select</div>
-    <input type="file" id="fileInput" style="display:none">
-    <input type="url" id="urlInput" placeholder="Or paste a file URL">
-    <button id="uploadBtn">Upload</button>
+<div class="container">
+<h1>ZeroCreation File Uploader</h1>
+<div class="drop-zone" id="dropZone">Drag & Drop files here or click to select</div>
+<input type="file" id="fileInput" multiple>
+<div class="file-list" id="fileList"></div>
+<button class="upload-btn" id="uploadBtn">Upload All Files</button>
+</div>
 
-    <div id="progress-container">
-      <div id="progress-bar"></div>
-    </div>
+<script>
+const API_URL = 'https://file-to-link-api-sfyd.vercel.app/upload';
+const dropZone = document.getElementById('dropZone');
+const fileInput = document.getElementById('fileInput');
+const fileList = document.getElementById('fileList');
+const uploadBtn = document.getElementById('uploadBtn');
+let files = [];
 
-    <div id="result"></div>
-  </div>
+// Drag & drop
+dropZone.addEventListener('click', () => fileInput.click());
+dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('dragover'); });
+dropZone.addEventListener('dragleave', () => dropZone.classList.remove('dragover'));
+dropZone.addEventListener('drop', e => {
+  e.preventDefault();
+  dropZone.classList.remove('dragover');
+  addFiles(e.dataTransfer.files);
+});
 
-  <script>
-    const API_URL = 'https://file-to-link-api-byzd.vercel.app/upload';
-    const dropZone = document.getElementById('dropZone');
-    const fileInput = document.getElementById('fileInput');
-    const uploadBtn = document.getElementById('uploadBtn');
-    const urlInput = document.getElementById('urlInput');
-    const progressBar = document.getElementById('progress-bar');
-    const progressContainer = document.getElementById('progress-container');
-    const result = document.getElementById('result');
+fileInput.addEventListener('change', e => addFiles(e.target.files));
 
-    // Drag & drop events
-    dropZone.addEventListener('click', () => fileInput.click());
-    dropZone.addEventListener('dragover', e => {
-      e.preventDefault();
-      dropZone.classList.add('dragover');
-    });
-    dropZone.addEventListener('dragleave', () => dropZone.classList.remove('dragover'));
-    dropZone.addEventListener('drop', e => {
-      e.preventDefault();
-      dropZone.classList.remove('dragover');
-      fileInput.files = e.dataTransfer.files;
-    });
+function addFiles(selectedFiles) {
+  for (let file of selectedFiles) {
+    if (files.find(f => f.name === file.name && f.size === file.size)) continue;
+    files.push(file);
+    const item = document.createElement('div');
+    item.className = 'file-item';
+    item.innerHTML = `
+      <div>
+        <div class="file-name">${file.name}</div>
+        <div class="file-size">${(file.size/1024/1024).toFixed(2)} MB</div>
+        <div class="progress-container"><div class="progress-bar"></div></div>
+      </div>
+    `;
+    file.progressElement = item.querySelector('.progress-bar');
+    fileList.appendChild(item);
+  }
+}
 
-    // Upload function
-    uploadBtn.addEventListener('click', async () => {
-      if (fileInput.files.length === 0 && !urlInput.value) {
-        alert('Please select a file or enter a file URL.');
-        return;
-      }
+// Upload function
+uploadBtn.addEventListener('click', async () => {
+  if (files.length === 0) { alert('No files selected'); return; }
+  for (let file of files) {
+    const formData = new FormData();
+    formData.append('file', file);
 
-      const formData = new FormData();
-      if (fileInput.files.length > 0) {
-        formData.append('file', fileInput.files[0]);
-      } else if (urlInput.value) {
-        formData.append('file_url', urlInput.value);
-      }
+    try {
+      const xhr = new XMLHttpRequest();
+      xhr.open('POST', API_URL, true);
 
-      progressContainer.style.display = 'block';
-      progressBar.style.width = '0%';
-      result.innerHTML = '';
+      xhr.upload.addEventListener('progress', e => {
+        if (e.lengthComputable) {
+          const percent = (e.loaded / e.total) * 100;
+          file.progressElement.style.width = percent + '%';
+        }
+      });
 
-      try {
-        const response = await fetch(API_URL, {
-          method: 'POST',
-          body: formData,
-        });
+      xhr.onreadystatechange = function() {
+        if (xhr.readyState === 4) {
+          if (xhr.status === 200) {
+            const data = JSON.parse(xhr.responseText);
+            const linkBox = document.createElement('div');
+            linkBox.className = 'link-box';
+            linkBox.innerHTML = `
+              <input type="text" value="${data.hotlink}" readonly>
+              <button class="copy-btn">Copy</button>
+            `;
+            const copyBtn = linkBox.querySelector('.copy-btn');
+            copyBtn.addEventListener('click', () => {
+              linkBox.querySelector('input').select();
+              document.execCommand('copy');
+              alert('Link copied!');
+            });
+            fileList.appendChild(linkBox);
+          } else {
+            alert('Upload failed: ' + xhr.responseText);
+          }
+        }
+      };
+      xhr.send(formData);
 
-        if (!response.ok) throw new Error('Upload failed');
-
-        const data = await response.json();
-        progressBar.style.width = '100%';
-
-        result.innerHTML = `
-          <p>File uploaded successfully!</p>
-          <div class="link-box">
-            <input type="text" id="downloadLink" value="${data.hotlink}" readonly>
-            <button class="copy-btn" onclick="copyLink()">Copy</button>
-          </div>
-        `;
-
-      } catch (err) {
-        result.innerHTML = `<p style="color:red">Error: ${err.message}</p>`;
-      }
-    });
-
-    function copyLink() {
-      const linkInput = document.getElementById('downloadLink');
-      linkInput.select();
-      linkInput.setSelectionRange(0, 99999);
-      document.execCommand("copy");
-      alert("Link copied to clipboard!");
+    } catch (err) {
+      console.error(err);
+      alert('Upload error: ' + err.message);
     }
-  </script>
+  }
+});
+</script>
 </body>
 </html>
