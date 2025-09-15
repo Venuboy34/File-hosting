@@ -434,53 +434,11 @@ uploadBtn.addEventListener('click', async () => {
       const xhr = new XMLHttpRequest();
       xhr.open('POST', API_URL, true);
 
-      // Set initial upload state
-      file.containerElement.classList.add('uploading');
-      file.statusElement.textContent = 'Uploading';
-      file.statusElement.className = 'upload-status status-uploading';
-      file.statsElement.classList.add('active');
-      file.startTime = Date.now();
-      file.lastTime = Date.now();
-      file.lastLoaded = 0;
-
-      // Progress tracking with detailed stats
+      // Progress tracking
       xhr.upload.addEventListener('progress', e => {
         if (e.lengthComputable) {
-          const currentTime = Date.now();
           const percent = (e.loaded / e.total) * 100;
-          const loaded = e.loaded;
-          const total = e.total;
-          
-          // Update progress bar
           file.progressElement.style.width = percent + '%';
-          
-          // Calculate speed
-          const timeDiff = (currentTime - file.lastTime) / 1000; // seconds
-          const loadedDiff = loaded - file.lastLoaded;
-          const speed = timeDiff > 0 ? loadedDiff / timeDiff : 0;
-          
-          // Update stats
-          file.transferredElement.textContent = `${formatFileSize(loaded)} / ${formatFileSize(total)}`;
-          
-          if (speed > 0) {
-            file.speedElement.textContent = formatSpeed(speed);
-            
-            // Calculate ETA
-            const remainingBytes = total - loaded;
-            const eta = remainingBytes / speed;
-            if (eta > 0 && eta < 3600) { // Show ETA only if less than 1 hour
-              file.speedElement.textContent += ` • ETA ${formatTime(eta)}`;
-            }
-          }
-          
-          // Update for next calculation
-          file.lastTime = currentTime;
-          file.lastLoaded = loaded;
-          
-          // Show percentage in progress
-          if (percent > 5) {
-            file.progressElement.style.setProperty('--progress-text', `'${Math.round(percent)}%'`);
-          }
         }
       });
 
@@ -488,12 +446,6 @@ uploadBtn.addEventListener('click', async () => {
         if (xhr.readyState === 4) {
           if (xhr.status === 200) {
             const data = JSON.parse(xhr.responseText);
-            
-            // Update final state
-            file.containerElement.classList.remove('uploading');
-            file.statusElement.textContent = 'Complete';
-            file.statusElement.className = 'upload-status status-complete';
-            file.speedElement.textContent = '✓ Uploaded';
             
             // Create link box
             const linkBox = document.createElement('div');
@@ -545,12 +497,6 @@ uploadBtn.addEventListener('click', async () => {
             }
             
           } else {
-            // Error state
-            file.containerElement.classList.remove('uploading');
-            file.statusElement.textContent = 'Error';
-            file.statusElement.className = 'upload-status status-error';
-            file.speedElement.textContent = '❌ Failed';
-            
             alert('❌ Upload failed: ' + xhr.responseText);
             uploadBtn.innerHTML = '<span>❌ Upload Failed</span>';
             uploadBtn.disabled = false;
@@ -562,13 +508,6 @@ uploadBtn.addEventListener('click', async () => {
 
     } catch (err) {
       console.error(err);
-      
-      // Error state
-      file.containerElement.classList.remove('uploading');
-      file.statusElement.textContent = 'Error';
-      file.statusElement.className = 'upload-status status-error';
-      file.speedElement.textContent = '❌ Failed';
-      
       alert('❌ Upload error: ' + err.message);
       uploadBtn.innerHTML = '<span>❌ Upload Error</span>';
       uploadBtn.disabled = false;
