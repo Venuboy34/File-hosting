@@ -4,83 +4,111 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>ZeroCreation File Hosting</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
   <style>
     body {
       margin: 0;
       font-family: 'Poppins', sans-serif;
-      background: #f0f4f8;
+      background: #f4f7ff;
       display: flex;
       justify-content: center;
       align-items: center;
-      height: 100vh;
+      min-height: 100vh;
     }
     .container {
       background: white;
-      border-radius: 12px;
+      border-radius: 16px;
       padding: 30px 25px;
+      max-width: 480px;
       width: 90%;
-      max-width: 450px;
       box-shadow: 0 10px 30px rgba(0,0,0,0.1);
       text-align: center;
     }
     h1 {
-      margin-bottom: 20px;
-      color: #333;
-      font-size: 24px;
+      color: #2c3e50;
+      margin-bottom: 25px;
     }
     .drop-zone {
-      border: 2px dashed #007bff;
-      border-radius: 10px;
-      padding: 30px;
+      border: 2px dashed #3498db;
+      border-radius: 12px;
+      padding: 35px;
       cursor: pointer;
-      transition: background 0.3s;
-      color: #007bff;
+      transition: 0.3s background;
+      color: #3498db;
+      font-weight: 500;
       margin-bottom: 15px;
     }
     .drop-zone.dragover {
-      background: #e6f0ff;
+      background: #eaf4ff;
     }
     input[type="url"] {
       width: 100%;
-      padding: 10px;
-      border-radius: 6px;
+      padding: 12px;
+      border-radius: 8px;
       border: 1px solid #ccc;
-      margin-bottom: 15px;
       font-size: 16px;
+      margin-bottom: 15px;
     }
     button {
       padding: 12px 20px;
       border: none;
-      border-radius: 6px;
-      background-color: #007bff;
+      border-radius: 8px;
+      background-color: #3498db;
       color: white;
       font-size: 16px;
       cursor: pointer;
       width: 100%;
-      transition: background 0.3s;
+      transition: 0.3s background;
     }
     button:hover {
-      background-color: #0056b3;
+      background-color: #217dbb;
     }
     #progress-container {
       margin-top: 20px;
       display: none;
+      background: #ddd;
+      border-radius: 8px;
+      overflow: hidden;
+      height: 12px;
     }
     #progress-bar {
       width: 0%;
-      height: 10px;
-      background: #007bff;
-      border-radius: 5px;
+      height: 100%;
+      background: #3498db;
       transition: width 0.3s;
     }
     #result {
       margin-top: 20px;
       word-break: break-word;
     }
-    a {
-      color: #007bff;
-      text-decoration: none;
-      font-weight: bold;
+    .link-box {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: #f1f5fb;
+      padding: 10px;
+      border-radius: 8px;
+      margin-top: 10px;
+    }
+    .link-box input {
+      border: none;
+      background: transparent;
+      width: 85%;
+      font-size: 14px;
+      color: #333;
+    }
+    .copy-btn {
+      background: #3498db;
+      color: white;
+      border: none;
+      padding: 6px 10px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 13px;
+      transition: 0.3s background;
+    }
+    .copy-btn:hover {
+      background: #217dbb;
     }
   </style>
 </head>
@@ -91,7 +119,7 @@
     <input type="file" id="fileInput" style="display:none">
     <input type="url" id="urlInput" placeholder="Or paste a file URL">
     <button id="uploadBtn">Upload</button>
-    
+
     <div id="progress-container">
       <div id="progress-bar"></div>
     </div>
@@ -100,7 +128,7 @@
   </div>
 
   <script>
-    const API_URL = 'https://file-to-link-api-1q9d.vercel.app/upload';
+    const API_URL = 'https://file-to-link-api-byzd.vercel.app/upload';
     const dropZone = document.getElementById('dropZone');
     const fileInput = document.getElementById('fileInput');
     const uploadBtn = document.getElementById('uploadBtn');
@@ -109,7 +137,7 @@
     const progressContainer = document.getElementById('progress-container');
     const result = document.getElementById('result');
 
-    // Drag & Drop
+    // Drag & drop events
     dropZone.addEventListener('click', () => fileInput.click());
     dropZone.addEventListener('dragover', e => {
       e.preventDefault();
@@ -150,12 +178,27 @@
 
         const data = await response.json();
         progressBar.style.width = '100%';
-        result.innerHTML = `<p>File uploaded successfully!</p>
-                            <p><a href="${data.hotlink}" target="_blank">Download your file</a></p>`;
+
+        result.innerHTML = `
+          <p>File uploaded successfully!</p>
+          <div class="link-box">
+            <input type="text" id="downloadLink" value="${data.hotlink}" readonly>
+            <button class="copy-btn" onclick="copyLink()">Copy</button>
+          </div>
+        `;
+
       } catch (err) {
         result.innerHTML = `<p style="color:red">Error: ${err.message}</p>`;
       }
     });
+
+    function copyLink() {
+      const linkInput = document.getElementById('downloadLink');
+      linkInput.select();
+      linkInput.setSelectionRange(0, 99999);
+      document.execCommand("copy");
+      alert("Link copied to clipboard!");
+    }
   </script>
 </body>
 </html>
