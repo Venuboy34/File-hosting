@@ -1,711 +1,441 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ZeroCreation File Uploader - Up to 10GB</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<style>
-  * {
-    box-sizing: border-box;
-  }
-  
-  body {
-    margin: 0;
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-    background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 25%, #ff9ff3 50%, #54a0ff 75%, #5f27cd 100%);
-    background-size: 400% 400%;
-    animation: gradientShift 15s ease infinite;
-    min-height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 20px;
-  }
-  
-  @keyframes gradientShift {
-    0% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
-    100% { background-position: 0% 50%; }
-  }
-  
-  .container {
-    background: rgba(255, 255, 255, 0.98);
-    backdrop-filter: blur(30px) saturate(180%);
-    padding: 50px;
-    border-radius: 32px;
-    box-shadow: 
-      0 32px 64px rgba(0, 0, 0, 0.15),
-      0 0 0 1px rgba(255, 255, 255, 0.3),
-      inset 0 1px 0 rgba(255, 255, 255, 0.8);
-    max-width: 700px;
-    width: 100%;
-    text-align: center;
-    border: 2px solid rgba(255, 255, 255, 0.3);
-    position: relative;
-    overflow: hidden;
-  }
-  
-  .container::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: linear-gradient(45deg, transparent 30%, rgba(255, 255, 255, 0.1) 50%, transparent 70%);
-    pointer-events: none;
-    animation: shimmerBackground 3s ease-in-out infinite;
-  }
-  
-  @keyframes shimmerBackground {
-    0%, 100% { opacity: 0; }
-    50% { opacity: 1; }
-  }
-  
-  h1 {
-    color: #2d3436;
-    margin: 0 0 15px 0;
-    font-size: 32px;
-    font-weight: 800;
-    background: linear-gradient(135deg, #ff6b6b, #ee5a24, #ff9ff3, #54a0ff);
-    background-size: 300% 300%;
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    animation: gradientText 4s ease infinite;
-    position: relative;
-    z-index: 1;
-  }
-  
-  @keyframes gradientText {
-    0%, 100% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
-  }
-  
-  .subtitle {
-    color: #636e72;
-    font-size: 16px;
-    font-weight: 500;
-    margin-bottom: 30px;
-    position: relative;
-    z-index: 1;
-  }
-  
-  .features {
-    display: flex;
-    justify-content: center;
-    gap: 30px;
-    margin-bottom: 35px;
-    flex-wrap: wrap;
-    position: relative;
-    z-index: 1;
-  }
-  
-  .feature {
-    background: linear-gradient(135deg, rgba(255, 107, 107, 0.1), rgba(84, 160, 255, 0.1));
-    padding: 15px 20px;
-    border-radius: 20px;
-    border: 2px solid rgba(255, 107, 107, 0.2);
-    font-size: 14px;
-    font-weight: 600;
-    color: #2d3436;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  }
-  
-  .feature:hover {
-    transform: translateY(-3px) scale(1.05);
-    box-shadow: 0 10px 25px rgba(255, 107, 107, 0.2);
-    border-color: rgba(255, 107, 107, 0.4);
-  }
-  
-  .drop-zone {
-    border: 3px dashed #ff6b6b;
-    border-radius: 24px;
-    padding: 70px 40px;
-    cursor: pointer;
-    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    color: #2d3436;
-    font-weight: 600;
-    margin-bottom: 25px;
-    position: relative;
-    overflow: hidden;
-    background: linear-gradient(135deg, rgba(255, 107, 107, 0.05), rgba(84, 160, 255, 0.05));
-  }
-  
-  .drop-zone::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255, 107, 107, 0.3), transparent);
-    transition: left 0.6s ease;
-  }
-  
-  .drop-zone:hover::before {
-    left: 100%;
-  }
-  
-  .drop-zone:hover {
-    border-color: #ee5a24;
-    background: linear-gradient(135deg, rgba(255, 107, 107, 0.1), rgba(84, 160, 255, 0.1));
-    transform: translateY(-5px) scale(1.02);
-    box-shadow: 0 20px 40px rgba(255, 107, 107, 0.15);
-  }
-  
-  .drop-zone.dragover {
-    background: linear-gradient(135deg, rgba(255, 107, 107, 0.2), rgba(84, 160, 255, 0.2));
-    border-color: #d63031;
-    transform: scale(1.05) translateY(-3px);
-    box-shadow: 0 25px 50px rgba(255, 107, 107, 0.25);
-  }
-  
-  .drop-zone-content {
-    position: relative;
-    z-index: 1;
-  }
-  
-  .drop-icon {
-    font-size: 56px;
-    margin-bottom: 20px;
-    display: block;
-    animation: bounce 2s infinite;
-  }
-  
-  @keyframes bounce {
-    0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
-    40% { transform: translateY(-10px); }
-    60% { transform: translateY(-5px); }
-  }
-  
-  .drop-text {
-    font-size: 18px;
-    margin-bottom: 8px;
-  }
-  
-  .drop-subtext {
-    font-size: 14px;
-    opacity: 0.7;
-    color: #636e72;
-  }
-  
-  input[type="file"] {
-    display: none;
-  }
-  
-  .file-list {
-    margin-top: 25px;
-    text-align: left;
-    max-height: 450px;
-    overflow-y: auto;
-    position: relative;
-    z-index: 1;
-  }
-  
-  .file-item {
-    background: linear-gradient(135deg, #fdfdfd, #f8f9fa);
-    padding: 20px;
-    border-radius: 16px;
-    margin-bottom: 15px;
-    border: 2px solid rgba(255, 107, 107, 0.1);
-    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    position: relative;
-    overflow: hidden;
-  }
-  
-  .file-item::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 3px;
-    background: linear-gradient(90deg, #ff6b6b, #ee5a24, #ff9ff3, #54a0ff);
-    background-size: 300% 100%;
-    animation: gradientMove 3s linear infinite;
-  }
-  
-  @keyframes gradientMove {
-    0% { background-position: 0% 50%; }
-    100% { background-position: 200% 50%; }
-  }
-  
-  .file-item:hover {
-    transform: translateY(-3px) scale(1.02);
-    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
-    border-color: rgba(255, 107, 107, 0.3);
-  }
-  
-  .file-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 12px;
-  }
-  
-  .file-name {
-    font-size: 15px;
-    font-weight: 600;
-    color: #2d3436;
-    word-break: break-all;
-    flex: 1;
-    margin-right: 15px;
-  }
-  
-  .file-size {
-    font-size: 13px;
-    color: #fff;
-    font-weight: 600;
-    background: linear-gradient(135deg, #ff6b6b, #ee5a24);
-    padding: 6px 12px;
-    border-radius: 8px;
-    white-space: nowrap;
-  }
-  
-  .progress-container {
-    background: #e1e8ed;
-    height: 8px;
-    border-radius: 8px;
-    margin: 15px 0;
-    overflow: hidden;
-    position: relative;
-  }
-  
-  .progress-bar {
-    width: 0%;
-    height: 100%;
-    background: linear-gradient(90deg, #ff6b6b, #ee5a24, #ff9ff3, #54a0ff);
-    background-size: 300% 100%;
-    transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    border-radius: 8px;
-    position: relative;
-    animation: progressGradient 2s linear infinite;
-  }
-  
-  @keyframes progressGradient {
-    0% { background-position: 0% 50%; }
-    100% { background-position: 200% 50%; }
-  }
-  
-  .progress-bar::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
-    animation: shimmer 2s infinite;
-  }
-  
-  @keyframes shimmer {
-    0% { transform: translateX(-100%); }
-    100% { transform: translateX(100%); }
-  }
-  
-  .link-box {
-    display: flex;
-    gap: 12px;
-    align-items: center;
-    margin-top: 15px;
-    padding: 15px;
-    background: linear-gradient(135deg, rgba(255, 107, 107, 0.05), rgba(84, 160, 255, 0.05));
-    border-radius: 12px;
-    border: 2px solid rgba(255, 107, 107, 0.2);
-  }
-  
-  .link-box input {
-    border: none;
-    background: transparent;
-    flex: 1;
-    font-size: 13px;
-    color: #2d3436;
-    outline: none;
-    font-family: 'Monaco', 'Menlo', monospace;
-    font-weight: 500;
-  }
-  
-  .copy-btn {
-    background: linear-gradient(135deg, #ff6b6b, #ee5a24);
-    color: white;
-    border: none;
-    padding: 8px 16px;
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 12px;
-    font-weight: 600;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    white-space: nowrap;
-  }
-  
-  .copy-btn:hover {
-    background: linear-gradient(135deg, #d63031, #c44569);
-    transform: translateY(-2px);
-    box-shadow: 0 8px 20px rgba(255, 107, 107, 0.3);
-  }
-  
-  .copy-btn:active {
-    transform: translateY(0);
-  }
-  
-  .upload-btn {
-    padding: 20px 40px;
-    border: none;
-    border-radius: 16px;
-    background: linear-gradient(135deg, #ff6b6b, #ee5a24, #ff9ff3);
-    background-size: 300% 300%;
-    color: white;
-    font-size: 18px;
-    font-weight: 700;
-    cursor: pointer;
-    width: 100%;
-    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    margin-top: 30px;
-    position: relative;
-    overflow: hidden;
-    animation: buttonGradient 4s ease infinite;
-    z-index: 1;
-  }
-  
-  @keyframes buttonGradient {
-    0%, 100% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
-  }
-  
-  .upload-btn::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
-    transition: left 0.6s;
-  }
-  
-  .upload-btn:hover::before {
-    left: 100%;
-  }
-  
-  .upload-btn:hover {
-    transform: translateY(-4px) scale(1.02);
-    box-shadow: 0 20px 40px rgba(255, 107, 107, 0.4);
-  }
-  
-  .upload-btn:active {
-    transform: translateY(-2px) scale(1.01);
-  }
-  
-  .upload-btn:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
-    transform: none;
-    animation: none;
-  }
-  
-  .footer {
-    margin-top: 30px;
-    text-align: center;
-    font-size: 12px;
-    color: #636e72;
-    font-weight: 500;
-    position: relative;
-    z-index: 1;
-  }
-  
-  .footer .aws-badge {
-    display: inline-block;
-    background: linear-gradient(135deg, #ff9500, #ff6b35);
-    color: white;
-    padding: 4px 10px;
-    border-radius: 6px;
-    font-weight: 600;
-    margin: 0 4px;
-  }
-  
-  /* Success animation */
-  .success {
-    animation: successPulse 0.8s ease-out;
-  }
-  
-  @keyframes successPulse {
-    0% { transform: scale(1); }
-    50% { transform: scale(1.05); }
-    100% { transform: scale(1); }
-  }
-  
-  /* Scrollbar styling */
-  .file-list::-webkit-scrollbar {
-    width: 8px;
-  }
-  
-  .file-list::-webkit-scrollbar-track {
-    background: #f1f3f4;
-    border-radius: 4px;
-  }
-  
-  .file-list::-webkit-scrollbar-thumb {
-    background: linear-gradient(135deg, #ff6b6b, #54a0ff);
-    border-radius: 4px;
-  }
-  
-  .file-list::-webkit-scrollbar-thumb:hover {
-    background: linear-gradient(135deg, #d63031, #2d3436);
-  }
-  
-  /* Mobile responsiveness */
-  @media (max-width: 640px) {
-    .container {
-      padding: 30px 20px;
-      margin: 10px;
-    }
-    
-    h1 {
-      font-size: 28px;
-    }
-    
-    .features {
-      gap: 15px;
-    }
-    
-    .feature {
-      font-size: 12px;
-      padding: 10px 15px;
-    }
-    
-    .drop-zone {
-      padding: 50px 25px;
-    }
-    
-    .drop-icon {
-      font-size: 42px;
-    }
-    
-    .drop-text {
-      font-size: 16px;
-    }
-  }
-</style>
-</head>
-<body>
-<div class="container">
-  <h1>🚀 ZeroCreation File Uploader</h1>
-  <p class="subtitle">Professional cloud storage solution for all your files</p>
-  
-  <div class="features">
-    <div class="feature">📦 Up to 10GB</div>
-    <div class="feature">🔗 Permanent Links</div>
-    <div class="feature">⚡ AWS Powered</div>
-  </div>
-  
-  <div class="drop-zone" id="dropZone">
-    <div class="drop-zone-content">
-      <div class="drop-icon">☁️</div>
-      <div class="drop-text">Drag & Drop files here or click to select</div>
-      <div class="drop-subtext">Support for all file types • Maximum 10GB per file</div>
-    </div>
-  </div>
-  <input type="file" id="fileInput" multiple>
-  <div class="file-list" id="fileList"></div>
-  <button class="upload-btn" id="uploadBtn">
-    <span>🚀 Upload All Files</span>
-  </button>
-  
-  <div class="footer">
-    Powered by <span class="aws-badge">AWS</span> • All Rights Reserved © 2025 ZeroCreation
-  </div>
-</div>
-
-<script>
-const API_URL = 'https://file-to-link-api-sfyd.vercel.app/upload';
-const dropZone = document.getElementById('dropZone');
-const fileInput = document.getElementById('fileInput');
-const fileList = document.getElementById('fileList');
-const uploadBtn = document.getElementById('uploadBtn');
-let files = [];
-
-// File size limit (10GB)
-const MAX_FILE_SIZE = 10 * 1024 * 1024 * 1024; // 10GB in bytes
-
-// Drag & drop functionality
-dropZone.addEventListener('click', () => fileInput.click());
-
-dropZone.addEventListener('dragover', e => {
-  e.preventDefault();
-  dropZone.classList.add('dragover');
-});
-
-dropZone.addEventListener('dragleave', () => {
-  dropZone.classList.remove('dragover');
-});
-
-dropZone.addEventListener('drop', e => {
-  e.preventDefault();
-  dropZone.classList.remove('dragover');
-  addFiles(e.dataTransfer.files);
-});
-
-fileInput.addEventListener('change', e => addFiles(e.target.files));
-
-function addFiles(selectedFiles) {
-  for (let file of selectedFiles) {
-    // Check file size limit
-    if (file.size > MAX_FILE_SIZE) {
-      alert(`❌ File "${file.name}" exceeds 10GB limit and will be skipped.`);
-      continue;
-    }
-    
-    // Check for duplicates
-    if (files.find(f => f.name === file.name && f.size === file.size)) continue;
-    
-    files.push(file);
-    const item = document.createElement('div');
-    item.className = 'file-item';
-    item.innerHTML = `
-      <div class="file-header">
-        <div class="file-name">📄 ${file.name}</div>
-        <div class="file-size">${formatFileSize(file.size)}</div>
-      </div>
-      <div class="progress-container">
-        <div class="progress-bar"></div>
-      </div>
-    `;
-    
-    file.progressElement = item.querySelector('.progress-bar');
-    file.containerElement = item;
-    fileList.appendChild(item);
-  }
-  
-  // Update upload button state
-  updateUploadButton();
-}
-
-function formatFileSize(bytes) {
-  if (bytes === 0) return '0 Bytes';
-  const k = 1024;
-  const sizes = ['Bytes', 'KB', 'MB', 'GB'];
-  const i = Math.floor(Math.log(bytes) / Math.log(k));
-  return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
-}
-
-function updateUploadButton() {
-  if (files.length === 0) {
-    uploadBtn.innerHTML = '<span>🚀 Upload All Files</span>';
-    uploadBtn.disabled = true;
-  } else {
-    uploadBtn.innerHTML = `<span>🚀 Upload ${files.length} File${files.length > 1 ? 's' : ''}</span>`;
-    uploadBtn.disabled = false;
-  }
-}
-
-// Upload functionality
-uploadBtn.addEventListener('click', async () => {
-  if (files.length === 0) {
-    alert('⚠️ No files selected');
-    return;
-  }
-  
-  uploadBtn.innerHTML = '<span>⏳ Uploading...</span>';
-  uploadBtn.disabled = true;
-  
-  let uploadCount = 0;
-  
-  for (let file of files) {
-    const formData = new FormData();
-    formData.append('file', file);
-
-    try {
-      const xhr = new XMLHttpRequest();
-      xhr.open('POST', API_URL, true);
-
-      // Progress tracking
-      xhr.upload.addEventListener('progress', e => {
-        if (e.lengthComputable) {
-          const percent = (e.loaded / e.total) * 100;
-          file.progressElement.style.width = percent + '%';
-        }
-      });
-
-      xhr.onreadystatechange = function() {
-        if (xhr.readyState === 4) {
-          if (xhr.status === 200) {
-            const data = JSON.parse(xhr.responseText);
-            
-            // Create link box
-            const linkBox = document.createElement('div');
-            linkBox.className = 'link-box';
-            linkBox.innerHTML = `
-              <input type="text" value="${data.hotlink}" readonly>
-              <button class="copy-btn">📋 Copy Link</button>
-            `;
-            
-            // Copy functionality
-            const copyBtn = linkBox.querySelector('.copy-btn');
-            copyBtn.addEventListener('click', async () => {
-              try {
-                await navigator.clipboard.writeText(data.hotlink);
-                copyBtn.innerHTML = '✅ Copied!';
-                copyBtn.style.background = 'linear-gradient(135deg, #00b894, #00a085)';
-                setTimeout(() => {
-                  copyBtn.innerHTML = '📋 Copy Link';
-                  copyBtn.style.background = 'linear-gradient(135deg, #ff6b6b, #ee5a24)';
-                }, 2000);
-              } catch (err) {
-                // Fallback for older browsers
-                const input = linkBox.querySelector('input');
-                input.select();
-                document.execCommand('copy');
-                copyBtn.innerHTML = '✅ Copied!';
-                copyBtn.style.background = 'linear-gradient(135deg, #00b894, #00a085)';
-                setTimeout(() => {
-                  copyBtn.innerHTML = '📋 Copy Link';
-                  copyBtn.style.background = 'linear-gradient(135deg, #ff6b6b, #ee5a24)';
-                }, 2000);
-              }
-            });
-            
-            file.containerElement.appendChild(linkBox);
-            file.containerElement.classList.add('success');
-            
-            uploadCount++;
-            if (uploadCount === files.length) {
-              uploadBtn.innerHTML = '<span>🎉 All Files Uploaded Successfully!</span>';
-              uploadBtn.style.background = 'linear-gradient(135deg, #00b894, #00a085)';
-              uploadBtn.style.animation = 'none';
-              setTimeout(() => {
-                uploadBtn.innerHTML = '<span>🚀 Upload More Files</span>';
-                uploadBtn.style.background = 'linear-gradient(135deg, #ff6b6b, #ee5a24, #ff9ff3)';
-                uploadBtn.style.animation = 'buttonGradient 4s ease infinite';
-                uploadBtn.disabled = false;
-                files = [];
-                updateUploadButton();
-              }, 4000);
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hostio - Professional File Hosting by Zero Creations</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          animation: {
+            'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+          },
+          colors: {
+            primary: {
+              50: '#f0f9ff',
+              100: '#e0f2fe',
+              200: '#bae6fd',
+              300: '#7dd3fc',
+              400: '#38bdf8',
+              500: '#0ea5e9',
+              600: '#0284c7',
+              700: '#0369a1',
+              800: '#075985',
+              900: '#0c4a6e',
             }
-            
-          } else {
-            alert('❌ Upload failed: ' + xhr.responseText);
-            uploadBtn.innerHTML = '<span>❌ Upload Failed - Try Again</span>';
-            uploadBtn.disabled = false;
-            uploadBtn.style.background = 'linear-gradient(135deg, #d63031, #74b9ff)';
           }
         }
-      };
-      
-      xhr.send(formData);
-
-    } catch (err) {
-      console.error(err);
-      alert('❌ Upload error: ' + err.message);
-      uploadBtn.innerHTML = '<span>❌ Network Error</span>';
-      uploadBtn.disabled = false;
+      }
     }
-  }
-});
+  </script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+    
+    * {
+      transition: all 0.3s ease;
+    }
+    
+    body {
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+      min-height: 100vh;
+    }
+    
+    .card-hover {
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+    
+    .card-hover:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    }
+    
+    .progress-bar {
+      height: 8px;
+      border-radius: 4px;
+      background: #e0f2fe;
+      overflow: hidden;
+    }
+    
+    .progress-fill {
+      height: 100%;
+      border-radius: 4px;
+      background: linear-gradient(90deg, #0ea5e9 0%, #38bdf8 100%);
+      width: 0%;
+      transition: width 0.4s ease;
+    }
+    
+    .fade-in {
+      animation: fadeIn 0.5s ease-in-out;
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .file-input-area {
+      border: 2px dashed #cbd5e1;
+      border-radius: 12px;
+      padding: 2rem;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    
+    .file-input-area:hover, .file-input-area.dragover {
+      border-color: #0ea5e9;
+      background-color: #f8fafc;
+    }
+    
+    .file-preview {
+      max-width: 100px;
+      max-height: 100px;
+      object-fit: contain;
+      margin-top: 1rem;
+      border-radius: 8px;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    }
+    
+    .bounce-in {
+      animation: bounceIn 0.6s ease-out;
+    }
+    
+    @keyframes bounceIn {
+      0% { transform: scale(0.9); opacity: 0; }
+      60% { transform: scale(1.05); }
+      100% { transform: scale(1); opacity: 1; }
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col">
+  <!-- Navigation -->
+  <nav class="bg-white shadow-sm">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between h-16">
+        <div class="flex items-center">
+          <div class="flex-shrink-0 flex items-center">
+            <i class="fas fa-cloud-upload-alt text-primary-600 text-2xl"></i>
+            <span class="ml-2 text-xl font-bold text-gray-900">Hostio</span>
+          </div>
+          <div class="hidden md:ml-6 md:flex md:space-x-8">
+            <a href="#" class="border-b-2 border-primary-500 text-gray-900 inline-flex items-center px-1 pt-1 text-sm font-medium">
+              Home
+            </a>
+            <a href="#" class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 text-sm font-medium">
+              About
+            </a>
+          </div>
+        </div>
+        <div class="flex items-center">
+          <span class="inline-flex rounded-md shadow-sm">
+            <a href="#" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500">
+              <i class="fas fa-user-plus mr-2"></i> Sign Up
+            </a>
+          </span>
+        </div>
+      </div>
+    </div>
+  </nav>
 
-// Initialize
-updateUploadButton();
-</script>
+  <!-- Main Content -->
+  <main class="flex-grow flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-md w-full">
+      <div class="bg-white rounded-2xl shadow-xl overflow-hidden card-hover">
+        <div class="px-6 py-8 sm:px-10 sm:py-12">
+          <div class="text-center">
+            <h1 class="text-3xl font-extrabold text-gray-900 sm:text-4xl">
+              <span class="block">🚀 Hostio</span>
+              <span class="block text-primary-600 text-xl font-semibold mt-2">File Hosting by Zero Creations</span>
+            </h1>
+            <p class="mt-4 text-lg text-gray-600">Fast, secure, and reliable file hosting</p>
+          </div>
+
+          <div class="mt-10">
+            <!-- File Input Area -->
+            <div class="file-input-area" id="fileInputArea">
+              <input type="file" id="fileInput" class="hidden">
+              <i class="fas fa-cloud-upload-alt text-4xl text-primary-500"></i>
+              <p class="mt-4 text-sm text-gray-600">Click to upload or drag and drop</p>
+              <p class="text-xs text-gray-500 mt-1">Maximum file size: 500MB</p>
+              
+              <!-- File Preview -->
+              <div id="filePreview" class="hidden">
+                <img src="" alt="File preview" class="file-preview mx-auto">
+                <p id="fileName" class="mt-2 text-sm font-medium text-gray-900 truncate"></p>
+                <p id="fileSize" class="text-xs text-gray-500"></p>
+              </div>
+            </div>
+            
+            <!-- Upload Button -->
+            <div class="mt-6">
+              <button id="uploadButton" onclick="uploadFile()" class="w-full flex justify-center items-center px-4 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-gradient-to-r from-primary-600 to-primary-500 hover:from-primary-700 hover:to-primary-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 opacity-80 cursor-not-allowed" disabled>
+                <i class="fas fa-upload mr-2"></i> Upload File
+              </button>
+            </div>
+
+            <!-- Progress Bar -->
+            <div id="progress-container" class="mt-8 hidden">
+              <div class="flex justify-between mb-2">
+                <span class="text-base font-medium text-primary-600" id="progress-percentage">0%</span>
+                <span class="text-sm font-medium text-gray-500" id="progress-status">Starting</span>
+              </div>
+              <div class="progress-bar">
+                <div id="progress-fill" class="progress-fill"></div>
+              </div>
+            </div>
+
+            <!-- Result -->
+            <div id="result" class="mt-8 p-6 bg-gray-50 rounded-lg hidden fade-in">
+              <h3 class="text-lg font-medium text-gray-900 mb-4 flex items-center">
+                <i class="fas fa-check-circle text-green-500 mr-2"></i> Upload Complete!
+              </h3>
+              <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                <div class="bg-white p-4 rounded-lg shadow-sm">
+                  <h4 class="text-sm font-medium text-gray-500">File Name</h4>
+                  <p id="result-file-name" class="mt-1 text-sm text-gray-900 truncate"></p>
+                </div>
+                <div class="bg-white p-4 rounded-lg shadow-sm">
+                  <h4 class="text-sm font-medium text-gray-500">File Size</h4>
+                  <p id="result-file-size" class="mt-1 text-sm text-gray-900"></p>
+                </div>
+              </div>
+              
+              <div class="mt-6">
+                <h4 class="text-sm font-medium text-gray-700 mb-3">File Links</h4>
+                <div class="space-y-3">
+                  <div class="flex items-center justify-between bg-white p-3 rounded-lg shadow-sm">
+                    <div class="flex items-center">
+                      <i class="fas fa-download text-primary-600 mr-3"></i>
+                      <span class="text-sm font-medium text-gray-700">Download Link</span>
+                    </div>
+                    <a id="download-link" href="#" target="_blank" class="text-sm font-medium text-primary-600 hover:text-primary-700">Copy Link</a>
+                  </div>
+                  
+                  <div id="stream-link-container" class="hidden">
+                    <div class="flex items-center justify-between bg-white p-3 rounded-lg shadow-sm">
+                      <div class="flex items-center">
+                        <i class="fas fa-play-circle text-primary-600 mr-3"></i>
+                        <span class="text-sm font-medium text-gray-700">Stream Link</span>
+                      </div>
+                      <a id="stream-link" href="#" target="_blank" class="text-sm font-medium text-primary-600 hover:text-primary-700">Copy Link</a>
+                    </div>
+                  </div>
+                  
+                  <div id="player-link-container" class="hidden">
+                    <div class="flex items-center justify-between bg-white p-3 rounded-lg shadow-sm">
+                      <div class="flex items-center">
+                        <i class="fas fa-external-link-alt text-primary-600 mr-3"></i>
+                        <span class="text-sm font-medium text-gray-700">Player Link</span>
+                      </div>
+                      <a id="player-link" href="#" target="_blank" class="text-sm font-medium text-primary-600 hover:text-primary-700">Copy Link</a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-white mt-12">
+    <div class="max-w-6xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
+      <div class="md:flex md:items-center md:justify-between">
+        <div class="flex justify-center md:order-2 space-x-6">
+          <a href="#" class="text-gray-400 hover:text-gray-500">
+            <i class="fab fa-facebook-f"></i>
+          </a>
+          <a href="#" class="text-gray-400 hover:text-gray-500">
+            <i class="fab fa-instagram"></i>
+          </a>
+          <a href="#" class="text-gray-400 hover:text-gray-500">
+            <i class="fab fa-twitter"></i>
+          </a>
+          <a href="#" class="text-gray-400 hover:text-gray-500">
+            <i class="fab fa-github"></i>
+          </a>
+        </div>
+        <div class="mt-8 md:mt-0 md:order-1">
+          <p class="text-center text-base text-gray-500">
+            &copy; 2023 Zero Creations. All rights reserved.
+          </p>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // File input handling
+    const fileInput = document.getElementById('fileInput');
+    const fileInputArea = document.getElementById('fileInputArea');
+    const filePreview = document.getElementById('filePreview');
+    const fileName = document.getElementById('fileName');
+    const fileSize = document.getElementById('fileSize');
+    const uploadButton = document.getElementById('uploadButton');
+    
+    // Click on area triggers file input
+    fileInputArea.addEventListener('click', () => {
+      fileInput.click();
+    });
+    
+    // Drag and drop functionality
+    fileInputArea.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      fileInputArea.classList.add('dragover');
+    });
+    
+    fileInputArea.addEventListener('dragleave', () => {
+      fileInputArea.classList.remove('dragover');
+    });
+    
+    fileInputArea.addEventListener('drop', (e) => {
+      e.preventDefault();
+      fileInputArea.classList.remove('dragover');
+      
+      if (e.dataTransfer.files.length) {
+        fileInput.files = e.dataTransfer.files;
+        handleFileSelection();
+      }
+    });
+    
+    // File input change
+    fileInput.addEventListener('change', handleFileSelection);
+    
+    function handleFileSelection() {
+      if (fileInput.files.length > 0) {
+        const file = fileInput.files[0];
+        
+        // Show file info
+        fileName.textContent = file.name;
+        fileSize.textContent = formatFileSize(file.size);
+        
+        // Show preview if it's an image
+        if (file.type.startsWith('image/')) {
+          const reader = new FileReader();
+          reader.onload = (e) => {
+            filePreview.querySelector('img').src = e.target.result;
+            filePreview.classList.remove('hidden');
+            filePreview.classList.add('bounce-in');
+          };
+          reader.readAsDataURL(file);
+        } else {
+          filePreview.classList.add('hidden');
+          filePreview.classList.remove('bounce-in');
+        }
+        
+        // Enable upload button
+        uploadButton.classList.remove('opacity-80', 'cursor-not-allowed');
+        uploadButton.classList.add('opacity-100', 'cursor-pointer');
+        uploadButton.disabled = false;
+      }
+    }
+    
+    function formatFileSize(bytes) {
+      if (bytes === 0) return '0 Bytes';
+      const k = 1024;
+      const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+      const i = Math.floor(Math.log(bytes) / Math.log(k));
+      return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+    }
+    
+    // Upload function with progress simulation
+    async function uploadFile() {
+      const file = document.getElementById('fileInput').files[0];
+      if (!file) return;
+      
+      // Show progress container
+      const progressContainer = document.getElementById('progress-container');
+      const progressFill = document.getElementById('progress-fill');
+      const progressPercentage = document.getElementById('progress-percentage');
+      const progressStatus = document.getElementById('progress-status');
+      
+      progressContainer.classList.remove('hidden');
+      document.getElementById('result').classList.add('hidden');
+      
+      // Disable upload button during upload
+      uploadButton.disabled = true;
+      uploadButton.classList.add('opacity-80', 'cursor-not-allowed');
+      
+      // Simulate progress (in a real application, you would use actual upload progress)
+      let progress = 0;
+      const interval = setInterval(() => {
+        progress += Math.random() * 5;
+        if (progress >= 100) {
+          progress = 100;
+          clearInterval(interval);
+          performUpload(file);
+        }
+        
+        progressFill.style.width = `${progress}%`;
+        progressPercentage.textContent = `${Math.round(progress)}%`;
+        progressStatus.textContent = progress < 100 ? 'Uploading...' : 'Finalizing...';
+      }, 200);
+    }
+    
+    // Actual upload function
+    async function performUpload(file) {
+      const formData = new FormData();
+      formData.append("file", file);
+      
+      try {
+        const res = await fetch("https://file-to-link-api-ivory.vercel.app/upload", {
+          method: "POST",
+          body: formData
+        });
+        
+        const data = await res.json();
+        
+        if (data.success) {
+          // Update progress to 100%
+          document.getElementById('progress-fill').style.width = '100%';
+          document.getElementById('progress-percentage').textContent = '100%';
+          document.getElementById('progress-status').textContent = 'Upload Complete!';
+          
+          // Show result
+          const resultDiv = document.getElementById('result');
+          resultDiv.classList.remove('hidden');
+          
+          document.getElementById('result-file-name').textContent = data.file_name;
+          document.getElementById('result-file-size').textContent = data.file_size_formatted;
+          
+          const downloadLink = document.getElementById('download-link');
+          downloadLink.href = data.download_url;
+          
+          if (data.supports_streaming) {
+            document.getElementById('stream-link-container').classList.remove('hidden');
+            document.getElementById('player-link-container').classList.remove('hidden');
+            
+            document.getElementById('stream-link').href = data.stream_url;
+            document.getElementById('player-link').href = data.player_url;
+          } else {
+            document.getElementById('stream-link-container').classList.add('hidden');
+            document.getElementById('player-link-container').classList.add('hidden');
+          }
+        } else {
+          document.getElementById('progress-status').textContent = 'Upload Failed!';
+          setTimeout(() => {
+            alert("Upload failed. Please try again.");
+            document.getElementById('progress-container').classList.add('hidden');
+          }, 1000);
+        }
+      } catch (err) {
+        document.getElementById('progress-status').textContent = 'Error!';
+        setTimeout(() => {
+          alert("Error: " + err.message);
+          document.getElementById('progress-container').classList.add('hidden');
+        }, 1000);
+      } finally {
+        // Re-enable upload button
+        uploadButton.disabled = false;
+        uploadButton.classList.remove('opacity-80', 'cursor-not-allowed');
+      }
+    }
+  </script>
 </body>
 </html>
